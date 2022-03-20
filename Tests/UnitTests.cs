@@ -184,13 +184,13 @@ namespace Test
             {
                 TextData = "UnitTestSerTrue",
                 Encryption = true,
-                KeySize = 1024,
+                KeySize = 2048,
                 PrivateKeyPassword = "tst"
             };
 
-            //var tst = 
-                rsa.RSA(req, 1);
-
+            var tst = "APUr9z4RNi9gMe8JHxlDs7zV8HESBjCHVYsigY1FwCsfggXgza6AnAMAuLh7jYR3nidGvJf1nvapToiaScfjj8/lr9jhLcxYYoaR5nMR3NgBEV7nGb5awdwotKM7R/M/CktrvCEm7FZozRRMT0VoOUQ3UFp5Yp8m8EdkUo44oFuoy5823OFurociylkiJr2rvNaRiBYSDfwI9wFlkS9cfi2dDY2UJE97cy7thlgtIDnjQr6Vk/ZnTnYcKCDjMYPh5UDkzvrjBR6gLQW2LpwL2hWYlfq/LJy53uAYUIQGM3qF0Agd6sKP5cQ0cYCrVykQINqsA2r2zRO49Cxs2HxjIA==";
+            rsa.RSADecrypt(tst, 1024);
+            //rsa.RSAEncrypt(req);
             //Assert.IsTrue(rowIncludedID.UUID > 0);
         }
 
