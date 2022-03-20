@@ -3,6 +3,7 @@ using RSA.Controller;
 using RSA.Domain;
 using RSA.Repository;
 using RSA.Services;
+using RSA.Services.Interface;
 
 namespace Test
 {
@@ -25,7 +26,8 @@ namespace Test
         public void InsertDataEncryptFalseSerTest()
         {
             EncryptedTextRepository rep = new();
-            EncryptedTextService ser = new(rep);
+            RSAEncryption rsa = new();
+            EncryptedTextService ser = new(rep, rsa);
 
             var req = new InsertRequest
             {
@@ -42,7 +44,8 @@ namespace Test
         public void InsertDataEncryptTrueSerTest()
         {
             EncryptedTextRepository rep = new();
-            EncryptedTextService ser = new(rep);
+            RSAEncryption rsa = new();
+            EncryptedTextService ser = new(rep, rsa);
 
             var req = new InsertRequest
             {
@@ -61,7 +64,8 @@ namespace Test
         public void InsertDataEncryptFalseContTest()
         {
             EncryptedTextRepository rep = new();
-            EncryptedTextService ser = new(rep);
+            RSAEncryption rsa = new();
+            EncryptedTextService ser = new(rep, rsa);
             EncryptedTextController cont = new(ser);
 
             var req = new InsertRequest
@@ -79,14 +83,15 @@ namespace Test
         public void InsertDataEncryptTrueContTest()
         {
             EncryptedTextRepository rep = new();
-            EncryptedTextService ser = new(rep);
+            RSAEncryption rsa = new();
+            EncryptedTextService ser = new(rep, rsa);
             EncryptedTextController cont = new(ser);
 
             var req = new InsertRequest
             {
                 TextData = "UnitTestContTrue",
                 Encryption = true,
-                KeySize = 2048,
+                KeySize = 4096,
                 PrivateKeyPassword = "tst"
             };
 
@@ -113,7 +118,8 @@ namespace Test
         public void SelectDataBaseSerTest()
         {
             EncryptedTextRepository rep = new();
-            EncryptedTextService ser = new(rep);
+            RSAEncryption rsa = new();
+            EncryptedTextService ser = new(rep, rsa);
 
             var rowSelectText = ser.SelectText(1);
 
@@ -124,10 +130,11 @@ namespace Test
         public void SelectDataBaseContTest()
         {
             EncryptedTextRepository rep = new();
-            EncryptedTextService ser = new(rep);
+            RSAEncryption rsa = new();
+            EncryptedTextService ser = new(rep, rsa);
             EncryptedTextController cont = new(ser);
 
-            var rowSelectText = cont.TextManagement(1);
+            var rowSelectText = cont.TextManagement(28);
 
             Assert.IsTrue(rowSelectText.decryptedText != null);
         }
@@ -188,9 +195,17 @@ namespace Test
                 PrivateKeyPassword = "tst"
             };
 
-            var tst = "APUr9z4RNi9gMe8JHxlDs7zV8HESBjCHVYsigY1FwCsfggXgza6AnAMAuLh7jYR3nidGvJf1nvapToiaScfjj8/lr9jhLcxYYoaR5nMR3NgBEV7nGb5awdwotKM7R/M/CktrvCEm7FZozRRMT0VoOUQ3UFp5Yp8m8EdkUo44oFuoy5823OFurociylkiJr2rvNaRiBYSDfwI9wFlkS9cfi2dDY2UJE97cy7thlgtIDnjQr6Vk/ZnTnYcKCDjMYPh5UDkzvrjBR6gLQW2LpwL2hWYlfq/LJy53uAYUIQGM3qF0Agd6sKP5cQ0cYCrVykQINqsA2r2zRO49Cxs2HxjIA==";
+            rsa.RSAEncrypt(req);
+            //Assert.IsTrue(rowIncludedID.UUID > 0);
+        }
+
+        [TestMethod]
+        public void Decrypt()
+        {
+            RSAEncryption rsa = new();
+
+            var tst = "JMPVAuTkiObJwFONBu7WuK4QAEHRBigh0HOI0qvEcoFKfXdmWPRxutUC7K4rfgTu2MTMYlMqTcdLuXiC/msvUHTtH11EmHd7X2nBYMf0AXQCdEr5dfvvaJ93fxlbtyBwzClJ1aNcXVu3f5tnBPCcNOz4HjAVLqIZ77AqqMmZpA5ffkz8CItp6OlIcOrY0kVQkaigdbWInfryZLc1igSqIZ5DuTgKDyWmrgtlO88O2WILrYQHvLpO/y7iUDwe71RcB1eos4AKh1dzkAIyHSA1n1B11dqvyksqkpYsIJw8db1/sR6UMOZKNIOthBAxSlYtvHxfvUX+kXRwg0momWoZHg==";
             rsa.RSADecrypt(tst, 1024);
-            //rsa.RSAEncrypt(req);
             //Assert.IsTrue(rowIncludedID.UUID > 0);
         }
 

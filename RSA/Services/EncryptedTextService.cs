@@ -8,20 +8,13 @@ namespace RSA.Services
     public class EncryptedTextService : IEncryptedTextService
     {
         private readonly IEncryptedTextRepository rep;
-        private readonly IRSAEncrypt? rsa;
+        private readonly IRSAEncrypt rsa;
 
         public EncryptedTextService(IEncryptedTextRepository rep, IRSAEncrypt rsa)
         {
             this.rep = rep;
             this.rsa = rsa;
         }
-
-        public EncryptedTextService(IEncryptedTextRepository rep)
-        {
-            this.rep = rep;
-            rsa = null;
-        }
-
 
         public InsertReturn InsertText(InsertRequest request)
         {
@@ -35,10 +28,8 @@ namespace RSA.Services
 
             if (request.Encryption)
             {
-               
-                //call the encrypt
-
-                return rep.InsertText(request.TextData);
+                var encryptedText = rsa.RSAEncrypt(request);
+                return rep.InsertText(encryptedText);
             }
             else
             {
@@ -51,13 +42,9 @@ namespace RSA.Services
         {
             var ret = rep.SelectText(id);
 
-            ret.decryptedText = ret.encryptedText;
-
-            //incluir decriptografia 
-            //ret.decryptedText = descriptografar(ret.encryptedText);
-            //ret.encryptedText = null;
-
-
+            ret.decryptedText = rsa.RSADecrypt(ret.encryptedText, 1024);
+            ret.encryptedText = null;
+            
             return ret;
 
         }

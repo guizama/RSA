@@ -4,60 +4,128 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 using System.Xml;
+using static RSA.Enums.Enums;
 
 namespace RSA.Services
 {
-    public class RSAEncryption //: IRSAEncrypt
+    public class RSAEncryption : IRSAEncrypt
     {
         private static UnicodeEncoding _encoder = new UnicodeEncoding();
 
-        public InsertReturn RSAEncrypt(InsertRequest request)
+        public string RSAEncrypt(InsertRequest request)
         {
             string data = request.TextData;
             var rsa = new RSACryptoServiceProvider(request.KeySize);
             var _privateKey = rsa.ToXmlString(true);
             var _publicKey = rsa.ToXmlString(false);
 
-            string path = @"publicKey.txt";
-            if (!File.Exists(path))
-            {
-                File.WriteAllTextAsync(path, _publicKey);
-            }
-            string path2 = @"privateKey.txt";
-            if (!File.Exists(path2))
-            {
-                File.WriteAllTextAsync(path2, _privateKey);
-            }
+            SaveKeys(_publicKey, _privateKey, request.KeySize);
 
             var rsa2 = new RSACryptoServiceProvider(request.KeySize);
-
-            string publicKey = System.IO.File.ReadAllText("publicKey.txt");
+            var publicKey = ReadKey(KeyType.publicKey, request.KeySize);
             rsa2.FromXmlString(publicKey);
-
 
             var dataToEncrypt = _encoder.GetBytes(data);
             var encryptedByteArray = rsa.Encrypt(dataToEncrypt, false).ToArray();
 
-            var ret = Convert.ToBase64String(encryptedByteArray);
-            var pkcs = rsa2.ExportPkcs8PrivateKey;
+            var encryptedText = Convert.ToBase64String(encryptedByteArray);
+            //var pkcs = rsa2.ExportPkcs8PrivateKey;
 
-            return null;
+            return encryptedText;
         }
 
-        public InsertReturn RSADecrypt(string txt, int keySize)
+        public string RSADecrypt(string txt, int keySize)
         {
             var data = Convert.FromBase64String(txt);
             var rsa2 = new RSACryptoServiceProvider(keySize);
 
-            string privateKey = System.IO.File.ReadAllText("privateKey.txt");
+            var privateKey = ReadKey(KeyType.privateKey, keySize);
             rsa2.FromXmlString(privateKey);
 
             var dataToDecrypt = data;
             var decryptedByte = rsa2.Decrypt(dataToDecrypt, false);
 
-            var ret = _encoder.GetString(decryptedByte);
+            var decryptedText = _encoder.GetString(decryptedByte);
 
-            return null;
+            return decryptedText;
+        }
+
+        private void SaveKeys(string publicKey, string privateKey, int keySize)
+        {
+            string path = @"publicKey" + keySize.ToString() + ".txt";
+            if (!File.Exists(path))
+            {
+                File.WriteAllTextAsync(path, publicKey);
+            }
+            string path2 = @"privateKey" + keySize.ToString() + ".txt";
+            if (!File.Exists(path2))
+            {
+                File.WriteAllTextAsync(path2, privateKey);
+            }
+        }
+
+        private string ReadKey(KeyType type, int keySize)
+        {
+            string path1024;
+            string path2048;
+            string path4096;
+
+            switch (type)
+            {
+                case KeyType.publicKey:
+                    path1024 = "publicKey1024.txt";
+                    path2048 = "publicKey2048.txt";
+                    path4096 = "publicKey4096.txt";
+
+                    if (File.Exists(path1024) || File.Exists(path2048) || File.Exists(path4096))
+                    {
+                        try
+                        {
+                            return System.IO.File.ReadAllText(path4096);
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                return System.IO.File.ReadAllText(path2048);
+                            }
+                            catch
+                            {
+                                return System.IO.File.ReadAllText(path1024);
+                            }
+                        }
+                    }
+                    throw new ArgumentOutOfRangeException(nameof(keySize));
+                    break;
+                case KeyType.privateKey:
+                    path1024 = "privateKey1024.txt";
+                    path2048 = "privateKey2048.txt";
+                    path4096 = "privateKey4096.txt";
+
+                    if (File.Exists(path1024) || File.Exists(path2048) || File.Exists(path4096))
+                    {
+                        try
+                        {
+                            return System.IO.File.ReadAllText(path4096);
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                return System.IO.File.ReadAllText(path2048);
+                            }
+                            catch
+                            {
+                                return System.IO.File.ReadAllText(path1024);
+                            }
+                        }
+                    }
+                    throw new ArgumentOutOfRangeException(nameof(keySize));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(keySize));
+            }
+
         }
     }
 }
