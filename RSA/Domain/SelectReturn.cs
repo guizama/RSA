@@ -4,5 +4,6 @@
     {
         public string? encryptedText { get; set; }
         public string? decryptedText { get; set; }
+        public int keySize { get; set; }    
     }
 }

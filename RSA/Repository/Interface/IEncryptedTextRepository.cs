@@ -4,7 +4,7 @@ namespace RSA.Repository.Interface
 {
     public interface IEncryptedTextRepository
     {
-        InsertReturn InsertText(string texto);
+        InsertReturn InsertText(string text, int keySize);
         SelectReturn SelectText(int id);
     }
 }

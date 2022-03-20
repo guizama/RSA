@@ -17,7 +17,7 @@ namespace Test
         {
             EncryptedTextRepository rep = new();
 
-            var rowIncludedID = rep.InsertText("UnitTestRep");
+            var rowIncludedID = rep.InsertText("UnitTestRep", 0);
 
             Assert.IsTrue(rowIncludedID.UUID > 0);
         }
@@ -89,7 +89,7 @@ namespace Test
 
             var req = new InsertRequest
             {
-                TextData = "UnitTestContTrue",
+                TextData = "UnitTestContTrueGZM4",
                 Encryption = true,
                 KeySize = 4096,
                 PrivateKeyPassword = "tst"
@@ -134,9 +134,9 @@ namespace Test
             EncryptedTextService ser = new(rep, rsa);
             EncryptedTextController cont = new(ser);
 
-            var rowSelectText = cont.TextManagement(28);
+            var rowSelectText = cont.TextManagement(35);
 
-            Assert.IsTrue(rowSelectText.decryptedText != null);
+            Assert.IsTrue(rowSelectText.decryptedText == "UnitTestContTrueGZM4");
         }
 
         #endregion

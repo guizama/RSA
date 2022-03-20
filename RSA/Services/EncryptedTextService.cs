@@ -29,11 +29,11 @@ namespace RSA.Services
             if (request.Encryption)
             {
                 var encryptedText = rsa.RSAEncrypt(request);
-                return rep.InsertText(encryptedText);
+                return rep.InsertText(encryptedText, request.KeySize);
             }
             else
             {
-                return rep.InsertText(request.TextData);
+                return rep.InsertText(request.TextData, 0);
             }
 
         }
@@ -42,7 +42,7 @@ namespace RSA.Services
         {
             var ret = rep.SelectText(id);
 
-            ret.decryptedText = rsa.RSADecrypt(ret.encryptedText, 1024);
+            ret.decryptedText = rsa.RSADecrypt(ret.encryptedText, ret.keySize);
             ret.encryptedText = null;
             
             return ret;

@@ -66,64 +66,30 @@ namespace RSA.Services
 
         private string ReadKey(KeyType type, int keySize)
         {
-            string path1024;
-            string path2048;
-            string path4096;
-
             switch (type)
             {
                 case KeyType.publicKey:
-                    path1024 = "publicKey1024.txt";
-                    path2048 = "publicKey2048.txt";
-                    path4096 = "publicKey4096.txt";
-
-                    if (File.Exists(path1024) || File.Exists(path2048) || File.Exists(path4096))
+                    try
                     {
-                        try
-                        {
-                            return System.IO.File.ReadAllText(path4096);
-                        }
-                        catch
-                        {
-                            try
-                            {
-                                return System.IO.File.ReadAllText(path2048);
-                            }
-                            catch
-                            {
-                                return System.IO.File.ReadAllText(path1024);
-                            }
-                        }
+                        return System.IO.File.ReadAllText("publicKey" + keySize.ToString() + ".txt");
                     }
-                    throw new ArgumentOutOfRangeException(nameof(keySize));
+                    catch
+                    {
+                        throw new Exception("No saved keys");
+                    }
                     break;
                 case KeyType.privateKey:
-                    path1024 = "privateKey1024.txt";
-                    path2048 = "privateKey2048.txt";
-                    path4096 = "privateKey4096.txt";
-
-                    if (File.Exists(path1024) || File.Exists(path2048) || File.Exists(path4096))
+                    try
                     {
-                        try
-                        {
-                            return System.IO.File.ReadAllText(path4096);
-                        }
-                        catch
-                        {
-                            try
-                            {
-                                return System.IO.File.ReadAllText(path2048);
-                            }
-                            catch
-                            {
-                                return System.IO.File.ReadAllText(path1024);
-                            }
-                        }
+                        return System.IO.File.ReadAllText("privateKey" + keySize.ToString() + ".txt");
                     }
-                    throw new ArgumentOutOfRangeException(nameof(keySize));
+                    catch
+                    {
+                        throw new Exception("No saved keys");
+                    }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(keySize));
+                    throw new Exception("Wrong type of key");
             }
 
         }
