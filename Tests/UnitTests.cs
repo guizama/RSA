@@ -17,7 +17,7 @@ namespace Test
         {
             EncryptedTextRepository rep = new();
 
-            var rowIncludedID = rep.InsertText("UnitTestRep", 0);
+            var rowIncludedID = rep.InsertText("UnitTestRep", 0, "");
 
             Assert.IsTrue(rowIncludedID.UUID > 0);
         }
@@ -89,10 +89,10 @@ namespace Test
 
             var req = new InsertRequest
             {
-                TextData = "UnitTestContTrueGZM4",
-                Encryption = true,
-                KeySize = 4096,
-                PrivateKeyPassword = "tst"
+                TextData = "GZM5",
+                Encryption = false,
+                //KeySize = 4096,
+                //PrivateKeyPassword = "tst"
             };
 
             var rowIncludedID = cont.TextManagement(req);
@@ -134,9 +134,9 @@ namespace Test
             EncryptedTextService ser = new(rep, rsa);
             EncryptedTextController cont = new(ser);
 
-            var rowSelectText = cont.TextManagement(35);
+            var rowSelectText = cont.TextManagement(38);
 
-            Assert.IsTrue(rowSelectText.decryptedText == "UnitTestContTrueGZM4");
+            Assert.IsTrue(rowSelectText.decryptedText == "GZM5");
         }
 
         #endregion
@@ -199,16 +199,7 @@ namespace Test
             //Assert.IsTrue(rowIncludedID.UUID > 0);
         }
 
-        [TestMethod]
-        public void Decrypt()
-        {
-            RSAEncryption rsa = new();
-
-            var tst = "JMPVAuTkiObJwFONBu7WuK4QAEHRBigh0HOI0qvEcoFKfXdmWPRxutUC7K4rfgTu2MTMYlMqTcdLuXiC/msvUHTtH11EmHd7X2nBYMf0AXQCdEr5dfvvaJ93fxlbtyBwzClJ1aNcXVu3f5tnBPCcNOz4HjAVLqIZ77AqqMmZpA5ffkz8CItp6OlIcOrY0kVQkaigdbWInfryZLc1igSqIZ5DuTgKDyWmrgtlO88O2WILrYQHvLpO/y7iUDwe71RcB1eos4AKh1dzkAIyHSA1n1B11dqvyksqkpYsIJw8db1/sR6UMOZKNIOthBAxSlYtvHxfvUX+kXRwg0momWoZHg==";
-            rsa.RSADecrypt(tst, 1024);
-            //Assert.IsTrue(rowIncludedID.UUID > 0);
-        }
-
         #endregion
+
     }
 }

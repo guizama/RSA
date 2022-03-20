@@ -8,7 +8,8 @@ namespace RSA.Services.Interface
         //InsertReturn RSADecrypt(string txt, int keySize);
 
         string RSAEncrypt(InsertRequest request);
-        string RSADecrypt(string txt, int keySize);
+        string RSADecrypt(SelectReturn encryptedData);
+
 
     }
 }

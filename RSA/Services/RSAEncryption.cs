@@ -15,14 +15,15 @@ namespace RSA.Services
         public string RSAEncrypt(InsertRequest request)
         {
             string data = request.TextData;
+
             var rsa = new RSACryptoServiceProvider(request.KeySize);
             var _privateKey = rsa.ToXmlString(true);
             var _publicKey = rsa.ToXmlString(false);
 
-            SaveKeys(_publicKey, _privateKey, request.KeySize);
+            SaveKeys(_publicKey, _privateKey, request.KeySize, request.PrivateKeyPassword);
 
             var rsa2 = new RSACryptoServiceProvider(request.KeySize);
-            var publicKey = ReadKey(KeyType.publicKey, request.KeySize);
+            var publicKey = ReadKey(KeyType.publicKey, request.KeySize, request.PrivateKeyPassword);
             rsa2.FromXmlString(publicKey);
 
             var dataToEncrypt = _encoder.GetBytes(data);
@@ -34,12 +35,12 @@ namespace RSA.Services
             return encryptedText;
         }
 
-        public string RSADecrypt(string txt, int keySize)
+        public string RSADecrypt(SelectReturn encryptedData)
         {
-            var data = Convert.FromBase64String(txt);
-            var rsa2 = new RSACryptoServiceProvider(keySize);
+            var data = Convert.FromBase64String(encryptedData.encryptedText);
+            var rsa2 = new RSACryptoServiceProvider(encryptedData.keySize);
 
-            var privateKey = ReadKey(KeyType.privateKey, keySize);
+            var privateKey = ReadKey(KeyType.privateKey, encryptedData.keySize, encryptedData.privateKeyPassword);
             rsa2.FromXmlString(privateKey);
 
             var dataToDecrypt = data;
@@ -50,28 +51,31 @@ namespace RSA.Services
             return decryptedText;
         }
 
-        private void SaveKeys(string publicKey, string privateKey, int keySize)
+        private void SaveKeys(string publicKey, string privateKey, int keySize, string privateKeyPassword)
         {
             string path = @"publicKey" + keySize.ToString() + ".txt";
             if (!File.Exists(path))
             {
-                File.WriteAllTextAsync(path, publicKey);
+                var tdesPublicKey = TripleDESEncrypt(publicKey, privateKeyPassword);
+                File.WriteAllTextAsync(path, tdesPublicKey);
             }
             string path2 = @"privateKey" + keySize.ToString() + ".txt";
             if (!File.Exists(path2))
             {
-                File.WriteAllTextAsync(path2, privateKey);
+                var tdesPrivateKey = TripleDESEncrypt(privateKey, privateKeyPassword);
+                File.WriteAllTextAsync(path2, tdesPrivateKey);
             }
         }
 
-        private string ReadKey(KeyType type, int keySize)
+        private string ReadKey(KeyType type, int keySize, string privateKeyPassword)
         {
             switch (type)
             {
                 case KeyType.publicKey:
                     try
                     {
-                        return System.IO.File.ReadAllText("publicKey" + keySize.ToString() + ".txt");
+                        var tdesPublicKey = System.IO.File.ReadAllText("publicKey" + keySize.ToString() + ".txt");
+                        return TripleDESDecrypt(tdesPublicKey, privateKeyPassword);
                     }
                     catch
                     {
@@ -81,7 +85,8 @@ namespace RSA.Services
                 case KeyType.privateKey:
                     try
                     {
-                        return System.IO.File.ReadAllText("privateKey" + keySize.ToString() + ".txt");
+                        var tdesPrivateKey = System.IO.File.ReadAllText("privateKey" + keySize.ToString() + ".txt");
+                        return TripleDESDecrypt(tdesPrivateKey, privateKeyPassword);
                     }
                     catch
                     {
@@ -92,6 +97,75 @@ namespace RSA.Services
                     throw new Exception("Wrong type of key");
             }
 
+        }
+
+        private string TripleDESEncrypt(string textToEncrypt, string privateKeyPassword)
+        {
+            byte[] MyEncryptedArray = UTF8Encoding.UTF8
+            .GetBytes(textToEncrypt);
+
+            MD5CryptoServiceProvider MyMD5CryptoService = new
+               MD5CryptoServiceProvider();
+
+            byte[] MysecurityKeyArray = MyMD5CryptoService.ComputeHash
+               (UTF8Encoding.UTF8.GetBytes(privateKeyPassword));
+
+            MyMD5CryptoService.Clear();
+
+            var MyTripleDESCryptoService = new
+               TripleDESCryptoServiceProvider();
+
+            MyTripleDESCryptoService.Key = MysecurityKeyArray;
+
+            MyTripleDESCryptoService.Mode = CipherMode.ECB;
+
+            MyTripleDESCryptoService.Padding = PaddingMode.PKCS7;
+
+            var MyCrytpoTransform = MyTripleDESCryptoService
+               .CreateEncryptor();
+
+            byte[] MyresultArray = MyCrytpoTransform
+               .TransformFinalBlock(MyEncryptedArray, 0,
+               MyEncryptedArray.Length);
+
+            MyTripleDESCryptoService.Clear();
+
+            return Convert.ToBase64String(MyresultArray, 0,
+               MyresultArray.Length);
+        }
+
+        private string TripleDESDecrypt(string textToDecrypt, string privateKeyPassword)
+        {
+            byte[] MyDecryptArray = Convert.FromBase64String
+            (textToDecrypt);
+
+            MD5CryptoServiceProvider MyMD5CryptoService = new
+               MD5CryptoServiceProvider();
+
+            byte[] MysecurityKeyArray = MyMD5CryptoService.ComputeHash
+               (UTF8Encoding.UTF8.GetBytes(privateKeyPassword));
+
+            MyMD5CryptoService.Clear();
+
+            var MyTripleDESCryptoService = new
+               TripleDESCryptoServiceProvider();
+
+            MyTripleDESCryptoService.Key = MysecurityKeyArray;
+
+            MyTripleDESCryptoService.Mode = CipherMode.ECB;
+
+            MyTripleDESCryptoService.Padding = PaddingMode.PKCS7;
+
+            var MyCrytpoTransform = MyTripleDESCryptoService
+               .CreateDecryptor();
+
+            byte[] MyresultArray = MyCrytpoTransform
+               .TransformFinalBlock(MyDecryptArray, 0,
+               MyDecryptArray.Length);
+
+            MyTripleDESCryptoService.Clear();
+
+            return UTF8Encoding.UTF8.GetString(MyresultArray);
         }
     }
 }

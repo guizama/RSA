@@ -29,11 +29,11 @@ namespace RSA.Services
             if (request.Encryption)
             {
                 var encryptedText = rsa.RSAEncrypt(request);
-                return rep.InsertText(encryptedText, request.KeySize);
+                return rep.InsertText(encryptedText, request.KeySize, request.PrivateKeyPassword);
             }
             else
             {
-                return rep.InsertText(request.TextData, 0);
+                return rep.InsertText(request.TextData, 0, "");
             }
 
         }
@@ -42,10 +42,28 @@ namespace RSA.Services
         {
             var ret = rep.SelectText(id);
 
-            ret.decryptedText = rsa.RSADecrypt(ret.encryptedText, ret.keySize);
-            ret.encryptedText = null;
-            
-            return ret;
+            if (ret.keySize > 0)
+            {
+                if (ret.encryptedText == null)
+                    throw new Exception("Text not found");
+                if (ret.keySize > 0 && ret.privateKeyPassword == null)
+                    throw new Exception("No Private Password");
+                ret.decryptedText = rsa.RSADecrypt(ret);
+                ret.encryptedText = null;
+
+                return ret;
+            }
+            else
+            {
+                ret.decryptedText = ret.encryptedText;
+                ret.encryptedText = null;
+
+                return ret;
+            }
+
+
+
+
 
         }
     }

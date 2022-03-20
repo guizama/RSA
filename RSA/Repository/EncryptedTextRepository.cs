@@ -8,7 +8,7 @@ namespace RSA.Repository
 {
     public class EncryptedTextRepository : IEncryptedTextRepository
     {
-        public InsertReturn InsertText(string text, int keySize)
+        public InsertReturn InsertText(string text, int keySize, string privateKeyPassword)
         {
             var sqlString = new SQLConnection();
             SqlConnection conn = new SqlConnection(sqlString.SQLConnectionString());
@@ -18,10 +18,11 @@ namespace RSA.Repository
             {
                 conn.Open();
                 
-                var query = "INSERT INTO EncryptedText(Text, KeySize) OUTPUT INSERTED.IdText VALUES(@Text, @KeySize)";
+                var query = "INSERT INTO EncryptedText(Text, KeySize, PrivateKeyPassword) OUTPUT INSERTED.IdText VALUES(@Text, @KeySize, @PrivateKeyPassword)";
                 SqlCommand comando = new(query, conn);
                 comando.Parameters.Add(new SqlParameter("@Text", text));
                 comando.Parameters.Add(new SqlParameter("@KeySize", keySize));
+                comando.Parameters.Add(new SqlParameter("@PrivateKeyPassword", privateKeyPassword));
                 comando.Parameters.Add("@ID", SqlDbType.Int, 4).Direction = ParameterDirection.Output;
                 var obj = comando.ExecuteScalar();
 
@@ -56,7 +57,7 @@ namespace RSA.Repository
             {
                 conn.Open();
 
-                var query = "SELECT Text, KeySize FROM EncryptedText WHERE IdText = @id";
+                var query = "SELECT Text, KeySize, PrivateKeyPassword FROM EncryptedText WHERE IdText = @id";
                 SqlCommand comando = new(query, conn);
 
                 SqlDataReader dr = null;
@@ -72,6 +73,7 @@ namespace RSA.Repository
                     {
                         ret.encryptedText = obj["Text"].ToString();
                         ret.keySize = Int32.Parse(obj["KeySize"].ToString());
+                        ret.privateKeyPassword = obj["PrivateKeyPassword"].ToString();
                     }
                 }
 
