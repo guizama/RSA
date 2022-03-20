@@ -1,19 +1,21 @@
 ﻿using RSA.Domain;
 using RSA.Repository.Interface;
 using RSA.Services.Interface;
-
+using static RSA.Enums.Enums;
 
 namespace RSA.Services
 {
     public class EncryptedTextService : IEncryptedTextService
     {
         private readonly IEncryptedTextRepository rep;
-        private readonly IRSAEncrypt rsa;
+        private readonly IRSAEncryptService rsa;
+        private readonly ILogService log;
 
-        public EncryptedTextService(IEncryptedTextRepository rep, IRSAEncrypt rsa)
+        public EncryptedTextService(IEncryptedTextRepository rep, IRSAEncryptService rsa, ILogService log)
         {
             this.rep = rep;
             this.rsa = rsa;
+            this.log = log;
         }
 
         public InsertReturn InsertText(InsertRequest request)
@@ -28,12 +30,37 @@ namespace RSA.Services
 
             if (request.Encryption)
             {
-                var encryptedText = rsa.RSAEncrypt(request);
-                return rep.InsertText(encryptedText, request.KeySize, request.PrivateKeyPassword);
+                var encrypt = rsa.RSAEncrypt(request);
+                var ret =  rep.InsertText(encrypt, request);
+
+                var logDomain = new LogDomain
+                {
+                    logType = LogType.INSERT,
+                    when = DateTime.Now,
+                    id = ret.UUID,
+                    encrypted = true
+                };
+                log.LogRegister(logDomain);
+
+                return ret;
             }
             else
             {
-                return rep.InsertText(request.TextData, 0, "");
+                var insertReturn = new InsertReturn { encryptedText = request.TextData };
+                request.KeySize = 0;
+                request.PrivateKeyPassword = "";
+                var ret = rep.InsertText(insertReturn, request);
+
+                var logDomain = new LogDomain
+                {
+                    logType = LogType.INSERT,
+                    when = DateTime.Now,
+                    id = ret.UUID,
+                    encrypted = false
+                };
+                log.LogRegister(logDomain);
+
+                return ret;
             }
 
         }
@@ -46,10 +73,19 @@ namespace RSA.Services
             {
                 if (ret.encryptedText == null)
                     throw new Exception("Text not found");
-                if (ret.keySize > 0 && ret.privateKeyPassword == null)
+                if (ret.keySize > 0 && (ret.privateKeyPassword == null || ret.privateKeyPassword == ""))
                     throw new Exception("No Private Password");
                 ret.decryptedText = rsa.RSADecrypt(ret);
                 ret.encryptedText = null;
+
+                var logDomain = new LogDomain
+                {
+                    logType = LogType.CONSULT,
+                    when = DateTime.Now,
+                    id = ret.id,
+                    encrypted = true
+                };
+                log.LogRegister(logDomain);
 
                 return ret;
             }
@@ -57,14 +93,20 @@ namespace RSA.Services
             {
                 ret.decryptedText = ret.encryptedText;
                 ret.encryptedText = null;
+                ret.keySize = 0;
+                ret.privateKeyPassword = null;
+
+                var logDomain = new LogDomain
+                {
+                    logType = LogType.CONSULT,
+                    when = DateTime.Now,
+                    id = ret.id,
+                    encrypted = false
+                };
+                log.LogRegister(logDomain);
 
                 return ret;
             }
-
-
-
-
-
         }
     }
 }

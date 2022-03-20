@@ -7,5 +7,11 @@
             publicKey = 1,
             privateKey = 2
         }
+
+        public enum LogType
+        {
+            INSERT,
+            CONSULT
+        }
     }
 }

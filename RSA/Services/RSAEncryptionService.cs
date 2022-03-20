@@ -8,11 +8,11 @@ using static RSA.Enums.Enums;
 
 namespace RSA.Services
 {
-    public class RSAEncryption : IRSAEncrypt
+    public class RSAEncryptionService : IRSAEncryptService
     {
         private static UnicodeEncoding _encoder = new UnicodeEncoding();
 
-        public string RSAEncrypt(InsertRequest request)
+        public InsertReturn RSAEncrypt(InsertRequest request)
         {
             string data = request.TextData;
 
@@ -30,9 +30,14 @@ namespace RSA.Services
             var encryptedByteArray = rsa.Encrypt(dataToEncrypt, false).ToArray();
 
             var encryptedText = Convert.ToBase64String(encryptedByteArray);
-            //var pkcs = rsa2.ExportPkcs8PrivateKey;
 
-            return encryptedText;
+            var ret = new InsertReturn
+            {
+                pkcs8 = ReadKey(KeyType.privateKey, request.KeySize, request.PrivateKeyPassword),
+                encryptedText = encryptedText
+            };
+
+            return ret;
         }
 
         public string RSADecrypt(SelectReturn encryptedData)

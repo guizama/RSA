@@ -4,5 +4,6 @@
     {
         public int UUID { get; set; }
         public string? pkcs8 { get; set; }
+        public string encryptedText { get; set; }
     }
 }
