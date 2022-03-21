@@ -93,5 +93,47 @@ namespace RSA.Repository
 
         }
 
+        public int SelectLastIdByKeySize(int keySize)
+        {
+            var sqlString = new SQLConnection();
+            SqlConnection conn = new SqlConnection(sqlString.SQLConnectionString());
+            var ret = 0;
+
+            try
+            {
+                conn.Open();
+
+                var query = "SELECT TOP(1) IdText FROM EncryptedText WHERE KeySize = @KeySize ORDER BY IdText DESC";
+                SqlCommand comando = new(query, conn);
+
+                SqlDataReader dr = null;
+
+                comando.Parameters.Add(new SqlParameter("@KeySize", keySize));
+                var obj = comando.ExecuteReader(); //xecuteScalar();
+                var txt = "";
+                var ks = "";
+
+                if (obj.HasRows)
+                {
+                    while (obj.Read())
+                    {
+                        ret = Int32.Parse(obj["IdText"].ToString());
+                    }
+                }
+
+                conn.Close();
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return ret;
+
+        }
     }
 }
