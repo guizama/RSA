@@ -1,0 +1,15 @@
+F:\Projetos\VS\RSA\RSA\bin\Debug\RSA.deps.json
+F:\Projetos\VS\RSA\RSA\bin\Debug\RSA.runtimeconfig.json
+F:\Projetos\VS\RSA\RSA\bin\Debug\appsettings.Development.json
+F:\Projetos\VS\RSA\RSA\bin\Debug\appsettings.json
+F:\Projetos\VS\RSA\RSA\bin\Debug\package-lock.json
+F:\Projetos\VS\RSA\RSA\bin\Debug\package.json
+F:\Projetos\VS\RSA\RSA\bin\Debug\RSA.staticwebassets.runtime.json
+F:\Projetos\VS\RSA\RSA\bin\Debug\RSA.exe
+F:\Projetos\VS\RSA\RSA\bin\Debug\RSA.dll
+F:\Projetos\VS\RSA\RSA\bin\Debug\FluentValidation.dll
+F:\Projetos\VS\RSA\RSA\bin\Debug\System.Data.SqlClient.dll
+F:\Projetos\VS\RSA\RSA\bin\Debug\RSA.pdb
+F:\Projetos\VS\RSA\RSA\obj\Debug\docker-compose.dcproj.AssemblyReference.cache
+F:\Projetos\VS\RSA\RSA\obj\Debug\docker-compose.dcproj.CoreCompileInputs.cache
+F:\Projetos\VS\RSA\RSA\obj\Debug\docker-compose.dcproj.CopyComplete

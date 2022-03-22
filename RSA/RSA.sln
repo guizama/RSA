@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSA", "RSA.csproj", "{8C26AD95-CB8F-4A15-8F38-0102E094DE69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RSA", "RSA.csproj", "{8C26AD95-CB8F-4A15-8F38-0102E094DE69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\Tests\Tests.csproj", "{204D7266-598E-4D00-B3F8-BD72A94401F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "..\Tests\Tests.csproj", "{204D7266-598E-4D00-B3F8-BD72A94401F1}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{A9ABA7A0-1EC7-48DA-BA65-E8737DD8E4E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{204D7266-598E-4D00-B3F8-BD72A94401F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{204D7266-598E-4D00-B3F8-BD72A94401F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{204D7266-598E-4D00-B3F8-BD72A94401F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9ABA7A0-1EC7-48DA-BA65-E8737DD8E4E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9ABA7A0-1EC7-48DA-BA65-E8737DD8E4E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9ABA7A0-1EC7-48DA-BA65-E8737DD8E4E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9ABA7A0-1EC7-48DA-BA65-E8737DD8E4E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  rsa:
+    image: ${DOCKER_REGISTRY-}rsa
+    build:
+      context: .
+      dockerfile: Dockerfile

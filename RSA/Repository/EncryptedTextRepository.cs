@@ -98,7 +98,7 @@ namespace RSA.Repository
             var sqlString = new SQLConnection();
             SqlConnection conn = new SqlConnection(sqlString.SQLConnectionString());
             var ret = 0;
-
+            //todo verify select 
             try
             {
                 conn.Open();

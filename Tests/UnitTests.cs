@@ -3,7 +3,6 @@ using RSA.Controller;
 using RSA.Domain;
 using RSA.Repository;
 using RSA.Services;
-using RSA.Services.Interface;
 
 namespace Test
 {
@@ -11,6 +10,27 @@ namespace Test
     public class UnitTests
     {
         #region Insert
+
+        [TestMethod]
+        public void Insert_Crypto_False()
+        {
+            EncryptedTextRepository rep = new();
+            RSAEncryptionService rsa = new();
+            LogService log = new();
+            EncryptedTextService ser = new(rep, rsa, log);
+            EncryptedTextController cont = new(ser);
+
+            var req = new InsertRequest
+            {
+                TextData = "Insert_Crypto_False",
+                Encryption = false
+            };
+
+            var rowIncludedID = cont.TextManagement(req);
+
+            Assert.IsTrue(rowIncludedID.UUID > 0);
+            Assert.IsTrue(rowIncludedID.pkcs8 == null);
+        }
 
         [TestMethod]
         public void Insert_Crypto_1024()
@@ -84,6 +104,22 @@ namespace Test
         #endregion
 
         #region Consult
+
+        [TestMethod]
+        public void Consult_Crypto_False()
+        {
+            EncryptedTextRepository rep = new();
+            RSAEncryptionService rsa = new();
+            LogService log = new();
+            EncryptedTextService ser = new(rep, rsa, log);
+            EncryptedTextController cont = new(ser);
+
+            var id = rep.SelectLastIdByKeySize(0);
+
+            var rowSelectText = cont.TextManagement(id);
+
+            Assert.IsTrue(rowSelectText.decryptedText == "Insert_Crypto_False");
+        }
 
         [TestMethod]
         public void Consult_Crypto_1024()
@@ -179,13 +215,16 @@ namespace Test
         public void Encrypt_Decrypt()
         {
             RSAEncryptionService rsa = new();
+            var keySize = 2048;
+            var priKeyPassword = "RSA";
+
 
             var reqEncrypt = new InsertRequest
             {
                 TextData = "Encrypt_Decrypt",
                 Encryption = true,
-                KeySize = 2048,
-                PrivateKeyPassword = "RSA"
+                KeySize = keySize,
+                PrivateKeyPassword = priKeyPassword
             };
             var encrypt = rsa.RSAEncrypt(reqEncrypt);
 
@@ -193,7 +232,7 @@ namespace Test
             {
                 encryptedText = encrypt.encryptedText,
                 keySize = 2048,
-                privateKeyPassword = "RSA"
+                privateKeyPassword = priKeyPassword
             };
             var decrypt = rsa.RSADecrypt(reqDecrypt);
 

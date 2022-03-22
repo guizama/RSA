@@ -1,0 +1,16 @@
+services:
+  rsa:
+    build:
+      context: F:\Projetos\VS\RSA\RSA
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: rsa
+    ports:
+    - target: 80
+    - target: 443
+    volumes:
+    - C:\Users\Guilherme\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\Guilherme\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+version: '3.4'
