@@ -114,3 +114,4 @@ F:\Projetos\VS\RSA\Tests\obj\Debug\net6.0\Tests.genruntimeconfig.cache
 F:\Projetos\VS\RSA\Tests\obj\Debug\net6.0\ref\Tests.dll
 F:\Projetos\VS\RSA\Tests\bin\Debug\net6.0\package.json
 F:\Projetos\VS\RSA\Tests\bin\Debug\net6.0\package-lock.json
+F:\Projetos\VS\RSA\Tests\bin\Debug\net6.0\launchSettings.json

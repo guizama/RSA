@@ -6,7 +6,7 @@ namespace RSA.Connection
     {
         public string SQLConnectionString()
         {
-            return @"Server=THUNDERCLOUD\THUNDERCLOUD;Database=ZCELERO;User Id=Admin;Password=123456;";
+            return @"Server=THUNDERCLOUD\THUNDERCLOUD;Database=RSA;User Id=Admin;Password=123456;";
         }
     }
 }

@@ -34,3 +34,4 @@ F:\Projetos\VS\RSA\RSA\obj\Debug\net6.0\RSA.genruntimeconfig.cache
 F:\Projetos\VS\RSA\RSA\obj\Debug\net6.0\ref\RSA.dll
 F:\Projetos\VS\RSA\RSA\bin\Debug\net6.0\package-lock.json
 F:\Projetos\VS\RSA\RSA\bin\Debug\net6.0\package.json
+F:\Projetos\VS\RSA\RSA\bin\Debug\net6.0\launchSettings.json

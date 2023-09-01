@@ -241,5 +241,38 @@ namespace Test
 
         #endregion
 
+
+
+        [TestMethod]
+        public void InsertTST()
+        {
+            EncryptedTextRepository rep = new();
+            RSAEncryptionService rsa = new();
+            LogService log = new();
+            EncryptedTextService ser = new(rep, rsa, log);
+            EncryptedTextController cont = new(ser);
+
+            var req = new InsertRequest
+            {
+                TextData = "\u0000",
+                Encryption = false,
+                KeySize = 4096,
+                PrivateKeyPassword = "RSA"
+            };
+
+            var rowIncludedID = cont.TextManagement(req);
+
+
+            var rowSelectText = cont.TextManagement(rowIncludedID.UUID);
+
+            Assert.IsTrue(rowSelectText.decryptedText.Equals("\u0000"));
+
+
+            //Assert.IsTrue(rowIncludedID.UUID > 0);
+            //Assert.IsTrue(rowIncludedID.pkcs8 == null);
+        }
+
+
+        // \u0000 - unicode de nulo
     }
 }

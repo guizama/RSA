@@ -75,6 +75,7 @@ namespace RSA.Services
                     throw new Exception("Text not found");
                 if (ret.keySize > 0 && (ret.privateKeyPassword == null || ret.privateKeyPassword == ""))
                     throw new Exception("No Private Password");
+
                 ret.decryptedText = rsa.RSADecrypt(ret);
                 ret.encryptedText = null;
 

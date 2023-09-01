@@ -4,6 +4,7 @@ using RSA.Services.Interface;
 
 namespace RSA.Controller
 {
+    [ApiController]
     public class EncryptedTextController
     {
         private readonly IEncryptedTextService ser;
@@ -13,13 +14,15 @@ namespace RSA.Controller
             this.ser = ser;
         }
 
+        [HttpPost]
         [Route("/v1/text-management")]
         public InsertReturn TextManagement(InsertRequest request)
         {
             return ser.InsertText(request);
         }
 
-        [Route("/v1/text-management?id={text_id}")]
+        [HttpPost]
+        [Route("/v1/text-management")]
         public SelectReturn TextManagement(int id)
         {
             return ser.SelectText(id);

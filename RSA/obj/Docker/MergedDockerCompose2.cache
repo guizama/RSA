@@ -1,0 +1,38 @@
+services:
+  rsa:
+    build:
+      context: F:\Projetos\VS\RSA\RSA
+      dockerfile: Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: RSA
+      target: base
+    container_name: RSA
+    entrypoint: tail -f /dev/null
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      ASPNETCORE_URLS: https://+:443;http://+:80
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      NUGET_FALLBACK_PACKAGES: /root/.nuget/fallbackpackages
+    image: rsa:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages
+        --additionalProbingPath /root/.nuget/fallbackpackages  "/app/bin/Debug/net6.0/RSA.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof
+        dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    ports:
+    - target: 80
+    - target: 443
+    tty: true
+    volumes:
+    - F:\Projetos\VS\RSA\RSA:/app:rw
+    - C:\Users\Guilherme\vsdbg\vs2017u5:/remote_debugger:rw
+    - C:\Users\Guilherme\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\Guilherme\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+    - C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages:/root/.nuget/fallbackpackages:ro
+    - C:\Users\Guilherme\.nuget\packages:/root/.nuget/packages:ro
+    - F:\Projetos\VS\RSA\RSA:/src:rw
+version: '3.4'

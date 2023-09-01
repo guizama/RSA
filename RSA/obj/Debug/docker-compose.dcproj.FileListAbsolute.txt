@@ -13,3 +13,4 @@ F:\Projetos\VS\RSA\RSA\bin\Debug\RSA.pdb
 F:\Projetos\VS\RSA\RSA\obj\Debug\docker-compose.dcproj.AssemblyReference.cache
 F:\Projetos\VS\RSA\RSA\obj\Debug\docker-compose.dcproj.CoreCompileInputs.cache
 F:\Projetos\VS\RSA\RSA\obj\Debug\docker-compose.dcproj.CopyComplete
+F:\Projetos\VS\RSA\RSA\bin\Debug\launchSettings.json
